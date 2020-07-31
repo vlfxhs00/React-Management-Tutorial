@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Customer from './components/Customer';
+import CustomerAdd from './components/CustomerAdd';
 import Table from '@material-ui/core/Table';
 import Paper from '@material-ui/core/Paper';
 import TableHead from '@material-ui/core/TableHead';
@@ -29,12 +30,25 @@ const styles = theme => ({
 
 
 class App extends Component {
-  
-  state = {
-    customers: "",
-    completed : 0
+ 
+  constructor(props) {
+    super(props);
+    this.state = {
+      customers : '',
+      completed : 0
+    }
   }
 
+  stateRefresh = () => {
+    this.setState({
+      customers : '',
+      completed : 0
+    });
+    this.callApi()
+    .then(res => this.setState({customers: res}))
+    .catch(err => console.log(err));
+  }
+ 
   componentDidMount() {
     this.timer = setInterval(this.progress, 20);
     this.callApi()
@@ -57,6 +71,7 @@ class App extends Component {
   render (){
     const { classes } = this.props;
     return (
+      <div>
       <Paper className={classes.root}>
         <Table className={classes.table}>
           <TableHead>
@@ -82,6 +97,8 @@ class App extends Component {
           </TableBody>
         </Table>
       </Paper>
+      <CustomerAdd stateRefresh={this.stateRefresh}/>
+      </div>
       );
     }
 }
